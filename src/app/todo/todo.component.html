@@ -1,0 +1,58 @@
+<div class="todo-app">
+  <mat-toolbar color="primary">
+    <span>TODO List</span>
+  </mat-toolbar>
+
+  <mat-card>
+    <div class="input-group">
+      <mat-form-field appearance="outline" class="example-full-width">
+        <mat-label>Add a new task</mat-label>
+        <input matInput [(ngModel)]="newTodo" (keyup.enter)="addTodo()" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="addTodo()">Add</button>
+    </div>
+
+    <div class="filter-buttons mb-3">
+      <button mat-stroked-button (click)="setFilter('all')" [color]="filter === 'all' ? 'primary' : ''">All</button>
+      <button mat-stroked-button (click)="setFilter('completed')" [color]="filter === 'completed' ? 'primary' : ''">Completed</button>
+      <button mat-stroked-button (click)="setFilter('incomplete')" [color]="filter === 'incomplete' ? 'primary' : ''">Incomplete</button>
+    </div>
+
+    <div class="task-count">
+      <strong>Completed Tasks:</strong> {{ completedCount }} / {{ todos.length }}
+    </div>
+    <div class="task-count">
+      <strong>Incomplete Tasks:</strong> {{ incompleteCount }} / {{ todos.length }}
+    </div>
+
+    <mat-list>
+      <mat-list-item
+        *ngFor="let todo of filteredTodos"
+        [ngClass]="{ completed: todo.completed, priority: todo.priority }">
+        <mat-checkbox
+          (change)="toggleCompletion(todo.id)"
+          [checked]="todo.completed">
+        </mat-checkbox>
+        <span
+          [contentEditable]="true"
+          (blur)="editTodo(todo.id, $event)"
+          matLine>
+          {{ todo.title }}
+        </span>
+        <span matLine class="date-added">
+          Added on: {{ todo.dateAdded | date: 'medium' }}
+        </span>
+        <button mat-icon-button color="accent" (click)="togglePriority(todo.id)">
+          <mat-icon>{{ todo.priority ? 'star' : 'star_border' }}</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteTodo(todo.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+
+    <div *ngIf="showUndo" class="alert alert-warning mt-3">
+      Task deleted. <button (click)="undoDelete()" class="btn btn-link">Undo</button>
+    </div>
+  </mat-card>
+</div>
